@@ -52,7 +52,8 @@ function generalized_susceptibility_mu(n::Integer, x, mu_B, T, nodes1, omega)
     # 使用 repeated differentiation via ForwardDiff
     deriv = f_mu
     for i in 1:n
-        deriv = mu -> ForwardDiff.derivative(deriv, mu)
+        prev = deriv
+        deriv = mu -> ForwardDiff.derivative(prev, mu)
     end
 
     # evaluate at provided mu_B and multiply by T^(n-4)
@@ -75,7 +76,8 @@ function generalized_susceptibility_omega(n::Integer, x, mu_B, T, nodes1, omega)
 
     deriv = f_w
     for i in 1:n
-        deriv = w -> ForwardDiff.derivative(deriv, w)
+        prev = deriv
+        deriv = w -> ForwardDiff.derivative(prev, w)
     end
 
     return deriv(omega) * T^(n - 4)

@@ -215,8 +215,8 @@ function calculate_core(x, mu_B, T, nodes1, omega)
 end
 
 @inline function calculate_rho(x,mu_B,T,nodes1,omega)
-    f_mu = mu_B -> pressure_wrapper(x, mu_B, T, nodes1,omega)
-    rho = ForwardDiff.derivative(f_mu, mu)
+    f_mu = μ -> pressure_wrapper(x, μ, T, nodes1,omega)
+    rho = ForwardDiff.derivative(f_mu, mu_B)
     return rho
 end
 
