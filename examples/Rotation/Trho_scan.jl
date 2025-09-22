@@ -11,6 +11,8 @@ using StaticArrays
 
 include("../../src/Rotation/Function_Rotation.jl")
 using .Function_Rotation: get_nodes, calculate_t_rho, calculate_thermo, hc, SVector
+include("../../src/Rotation/Parameter_Rotation.jl")
+using .Parameter_Rotation: x_initial_Trho
 
 function Trho(T_start,T_end)
     nodes1, nodes2 = get_nodes(128,16)
@@ -21,7 +23,7 @@ function Trho(T_start,T_end)
     mkpath(outdir)
     outfile = joinpath(outdir, "trho_rotation.csv")
 
-    x_initial = [-2.13,0.06,0.12, 310 / hc]
+    x_initial = x_initial_Trho
     x_rho_3 = copy(x_initial)
 
     open(outfile, "w") do io

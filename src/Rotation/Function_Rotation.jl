@@ -247,21 +247,5 @@ function dP_dT4_rotation(x, mu, T, nodes1, omega)
     return ForwardDiff.derivative(f, T)
 end
 
-"""
-phi = -2.13
-Phi1 = 0.06
-Phi2 = 0.13
-T=100/hc
-mu = 308.3/hc
-nodes1, nodes2 = get_nodes(128, 16)
-omega = 100/hc
-omega = 0.0
-@show calculate_pressure(phi, Phi1, Phi2, mu, T, nodes1, omega)
-x = SVector(phi, Phi1, Phi2)
-@show calculate_core(x, mu, T, nodes1, omega)
-@show calculate_thermo(x, mu, T, nodes1, omega)
-x=SVector(phi, Phi1, Phi2, mu)
-@show calculate_t_rho(x, T, 4.0, nodes1, omega)
-"""
 
 end # module Function_Rotation

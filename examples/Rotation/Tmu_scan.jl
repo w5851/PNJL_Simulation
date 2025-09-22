@@ -11,6 +11,8 @@ using StaticArrays
 
 include("../../src/Rotation/Function_Rotation.jl")
 using .Function_Rotation: get_nodes, calculate_core, calculate_thermo, calculate_mass, hc
+include("../../src/Rotation/Parameter_Rotation.jl")
+using .Parameter_Rotation: x_initial_Tmu
 
 function Tmu(T_start; T_end=T_start, T_step=1/hc, mu_start=0/hc, mu_end=0.0, mu_step=-1/hc, omega=100/hc)
     # 节点
@@ -21,8 +23,8 @@ function Tmu(T_start; T_end=T_start, T_step=1/hc, mu_start=0/hc, mu_end=0.0, mu_
     mkpath(outdir)
     outfile = joinpath(outdir, "tmu_rotation.csv")
 
-    # 初始 x（只有 3 个变量：phi, Phi1, Phi2）
-    x_initial = [-2.13, 0.06, 0.12]
+    # 初始 x（只有 3 个变量：phi, Phi1, Phi2），从模块中读取
+    x_initial = x_initial_Tmu
     x_prev = copy(x_initial)
 
     open(outfile, "w") do io
