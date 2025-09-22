@@ -10,6 +10,7 @@ using NLsolve
 using StaticArrays
 
 include("../../src/Rotation/Function_Rotation.jl")
+using Function_Rotation: get_nodes, calculate_t_rho, calculate_thermo, hc, SVector
 
 function Trho(T_start,T_end)
     nodes1, nodes2 = get_nodes(128,16)

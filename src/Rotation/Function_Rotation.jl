@@ -1,3 +1,5 @@
+module Function_Rotation
+
 include("Constants_Rotation.jl")
 include("../init.jl")
 using .Constants_Rotation:hc, π, rho0, a0, a1, a2, a3, b3, b4, T0, Nc, Lambda_f, G_f, K_f, m0_q_f, m0_s_f, r0, coefficients
@@ -9,6 +11,14 @@ using NLsolve
 using BenchmarkTools
 using StaticArrays
 using FiniteDifferences
+
+# Export commonly used symbols for examples
+export hc, π, rho0, a0, a1, a2, a3, b3, b4, T0, Nc, Lambda_f, G_f, K_f, m0_q_f, m0_s_f, r0, coefficients
+export init_bessel, get_nodes, calculate_chiral, calculate_U, calculate_mass, calculate_energy
+export AA, AAbar, calculate_log_term, calculate_log_sum, calc_factors, calc_U
+export calculate_pressure, pressure_wrapper, calculate_core, calculate_rho, calculate_thermo
+export calculate_t_rho, pressure_solve_core, dP_dT_rotation, dP_dT2_rotation, dP_dT3_rotation, dP_dT4_rotation
+export generate_single_temperature_data, has_s_shape, find_cep, test_find_cep
 
 function init_bessel(p,theta,n,w)
     t = sin.(theta)
@@ -479,3 +489,5 @@ x = SVector(phi, Phi1, Phi2)
 x=SVector(phi, Phi1, Phi2, mu)
 @show calculate_t_rho(x, T, 4.0, nodes1, omega)
 """
+
+end # module Function_Rotation
