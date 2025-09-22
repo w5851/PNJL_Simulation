@@ -1,5 +1,5 @@
 include("Constants_Rotation.jl")
-include("init.jl")
+include("../init.jl")
 using .Constants_Rotation:hc, π, rho0, a0, a1, a2, a3, b3, b4, T0, Nc, Lambda_f, G_f, K_f, m0_q_f, m0_s_f, r0, coefficients
 using .init:gauleg
 using SpecialFunctions: log, exp, besselj
