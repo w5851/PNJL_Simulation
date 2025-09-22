@@ -1,0 +1,21 @@
+# Temperature Finder Results with Optimization Parameters
+# Generated on: 2025-09-15T23:29:25.751
+# Optimization Parameters:
+# rho0 = 0.16 fm^-3
+# B_A = -16.0 MeV
+# K = 240.0 MeV
+# m_ratio = 0.75
+# E_sym = 31.3 MeV
+# Physical Parameters:
+# gsigma = 1.25
+# gdelta = 0.01
+# mu_B = 697.0 MeV
+# T_search_range = 30.0 - 180.0 MeV
+# T_scan_step = 2.0 MeV
+# nodes = 256
+#
+kappa3_over_kappa1_target,kappa4_over_kappa2_target,T_for_kappa3_kappa1_MeV,T_for_kappa4_kappa2_MeV,temperature_difference_MeV,mu_B_MeV,rho0,B_A_MeV,K_MeV,m_ratio,E_sym_MeV,status_kappa3_kappa1,status_kappa4_kappa2
+0.3,0.8,110.77998978534023,78.75925680341946,32.02073298192077,697.0,0.16,-16.0,240.0,0.75,31.3,找到,找到
+0.5,1.0,99.51617286148984,75.4659980653232,24.050174796166623,697.0,0.16,-16.0,240.0,0.75,31.3,找到,找到
+0.7,1.2,91.95621403000621,71.00697232226008,20.94924170774613,697.0,0.16,-16.0,240.0,0.75,31.3,找到,找到
+1.0,1.5,81.97447159397615,NaN,NaN,697.0,0.16,-16.0,240.0,0.75,31.3,找到,未找到

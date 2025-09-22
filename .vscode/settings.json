@@ -1,0 +1,18 @@
+{
+    "python.analysis.extraPaths": [
+        "./src",
+        "./src/Gas_Liquid"
+    ],
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.stubPath": "./src",
+    "python.defaultInterpreterPath": "python",
+    "python.analysis.include": [
+        "./src/**",
+        "./test/**",
+        "./scripts/**"
+    ],
+    "python.analysis.exclude": [
+        "./output/**",
+        "./.git/**"
+    ]
+}

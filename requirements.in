@@ -1,0 +1,10 @@
+# Top-level (direct) Python dependencies for Rotation_PNJL
+# Keep this file human-editable: only top-level dependencies here.
+
+numpy
+pandas
+matplotlib
+scipy
+scikit-learn
+scikit-optimize
+julia  # pyjulia bridge (still need Julia installed separately)
