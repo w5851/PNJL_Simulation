@@ -123,7 +123,7 @@ end
 @inline function calculate_log_sum(masses, p_nodes, Phi1, Phi2, mu, T, coefficient, n_nodes, omega)
     """逐元素计算对数项"""
     total = 0.0
-    
+    """
     # 完全展开嵌套循环，每次操作单个元素
     @inbounds for i in eachindex(masses)
         mass_i = masses[i]
@@ -137,6 +137,16 @@ end
             log_term = calculate_log_term(E_i, mu_i, T, Phi1, Phi2)
             total += log_term * coefficient_j
         end
+    end
+    """
+    @inbounds @simd for j in eachindex(p_nodes)
+        p = p_nodes[j]
+        n = n_nodes[j]
+        coefficient_j = coefficient[j]
+        E_i = calculate_energy(masses, p,n,omega)
+        # 直接计算单个元素
+        log_term = calculate_log_term(E_i, mu, T, Phi1, Phi2)
+        total += log_term * coefficient_j
     end
     return total * (-T)
 end
@@ -233,7 +243,7 @@ end
 
 function pressure_solve_core(x, mu_B, T, nodes1, omega)
     """Rotation模型的压力求解核心函数"""
-    X0_typed = convert.(promote_type(eltype(x), typeof(T)), x)
+    X0_typed = convert.(promote_type(eltype(x), typeof(T), typeof(mu_B), typeof(omega)), x)
     res = nlsolve(x -> calculate_core(x, mu_B, T, nodes1, omega), X0_typed, autodiff=:forward)
     return pressure_wrapper(res.zero, mu_B, T, nodes1, omega)
 end
