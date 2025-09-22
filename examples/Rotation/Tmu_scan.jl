@@ -10,7 +10,7 @@ using NLsolve
 using StaticArrays
 
 include("../../src/Rotation/Function_Rotation.jl")
-using Function_Rotation: get_nodes, calculate_core, calculate_thermo, calculate_mass, hc
+using .Function_Rotation: get_nodes, calculate_core, calculate_thermo, calculate_mass, hc
 
 function Tmu(T_start; T_end=T_start, T_step=1/hc, mu_start=0/hc, mu_end=0.0, mu_step=-1/hc, omega=100/hc)
     # 节点
