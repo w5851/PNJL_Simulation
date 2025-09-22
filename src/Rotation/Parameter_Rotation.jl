@@ -8,7 +8,7 @@ const x_initial_Tmu = [-2.13, 0.06, 0.12]
 
 # 对应 `Trho_scan.jl` 中的 x_initial = [-2.13,0.06,0.12, 310 / hc]
 # 注意最后一项是 mu（以 MeV 为单位除以 hc 转换为 fm^{-1}）
-const x_initial_Trho = [-2.13, 0.06, 0.12, 310 / hc]
+const x_initial_Trho = [-2.13, 0.06, 0.12, 310*3 / hc]
 
 export x_initial_Tmu, x_initial_Trho
 

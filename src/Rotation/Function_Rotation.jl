@@ -20,6 +20,7 @@ export get_nodes,
        calculate_thermo,
        calculate_mass,
        pressure_solve_core,
+       calculate_pressure, # 接受重子化学势的接口
        hc,
        rho0,
        T0,
@@ -160,8 +161,8 @@ function calc_U(T, Phi1, Phi2, omega)
     return T^4 * term
 end
 
-function calculate_pressure(phi,Phi1,Phi2,mu,T,nodes1,omega)
-    """计算压力=-omega,T和mu传入前需归一化"""
+function calculate_pressure_mu_quark(phi,Phi1,Phi2,mu_quark,T,nodes1,omega)
+    """计算压力=-omega, 以夸克化学势 mu_quark 为输入（内部原始实现）"""
     # 在函数开始时解包 nodes，并将数组部分转换为视图
     p_nodes2 = @view nodes1[1][:]  # 假设 nodes2[1] 是数组
     n_nodes2 = @view nodes1[2][:]  # 假设 nodes2[2] 是数组
@@ -173,38 +174,49 @@ function calculate_pressure(phi,Phi1,Phi2,mu,T,nodes1,omega)
     masses = calculate_mass(phi)
     
     # 计算 log 部分
-    log_sum = calculate_log_sum(masses, p_nodes2, Phi1, Phi2, mu, T, coef2,n_nodes2,omega)
+    log_sum = calculate_log_sum(masses, p_nodes2, Phi1, Phi2, mu_quark, T, coef2,n_nodes2,omega)
     
     return -(chi+U+log_sum)
 end
 
-@inline function pressure_wrapper(x, mu, T, nodes1, omega)
+# 将重子化学势转换为夸克化学势（简单的一致性转换：mu_quark = mu_B / 3）
+@inline function baryon_to_quark_mu(mu_B)
+    return mu_B / 3.0
+end
+
+# 对外保留的 calculate_pressure 接口：接受重子化学势并内部转换为夸克化学势
+function calculate_pressure(phi,Phi1,Phi2,mu_B,T,nodes1,omega)
+    mu_quark = baryon_to_quark_mu(mu_B)
+    return calculate_pressure_mu_quark(phi,Phi1,Phi2,mu_quark,T,nodes1,omega)
+end
+
+@inline function pressure_wrapper(x, mu_B, T, nodes1, omega)
     """压力计算的包装函数"""
     phi = x[1]
     Phi1 = x[2]
     Phi2 = x[3]
-    return calculate_pressure(phi, Phi1, Phi2, mu, T, nodes1, omega)
+    return calculate_pressure(phi, Phi1, Phi2, mu_B, T, nodes1, omega)
 end
 
-function calculate_core(x, mu, T, nodes1, omega)
+function calculate_core(x, mu_B, T, nodes1, omega)
     """核心计算函数"""
-    f = x -> pressure_wrapper(x, mu, T, nodes1, omega)
+    f = x -> pressure_wrapper(x, mu_B, T, nodes1, omega)
     return ForwardDiff.gradient(f, x)
 end
 
-@inline function calculate_rho(x,mu,T,nodes1,omega)
-    f_mu = mu -> pressure_wrapper(x, mu, T, nodes1,omega)
+@inline function calculate_rho(x,mu_B,T,nodes1,omega)
+    f_mu = mu_B -> pressure_wrapper(x, mu_B, T, nodes1,omega)
     rho = ForwardDiff.derivative(f_mu, mu)
     return rho
 end
 
-@inline function calculate_thermo(x , mu,T,nodes1,omega)
-    rho = calculate_rho(x, mu, T, nodes1,omega) / rho0
+@inline function calculate_thermo(x , mu_B,T,nodes1,omega)
+    rho = calculate_rho(x, mu_B, T, nodes1,omega) / rho0
 
-    f_T = T -> pressure_wrapper(x, mu, T, nodes1,omega)
+    f_T = T -> pressure_wrapper(x, mu_B, T, nodes1,omega)
     entropy = ForwardDiff.derivative(f_T, T)
 
-    pressure = pressure_wrapper(x, mu, T, nodes1,omega)
+    pressure = pressure_wrapper(x, mu_B, T, nodes1,omega)
     energy = -pressure + sum(mu .* rho) + T * entropy  # 使用热力学关系计算能量
 
     return pressure,rho, entropy,energy
@@ -212,40 +224,18 @@ end
 
 function calculate_t_rho(x,T,rho,nodes1,omega, fvec=Vector{eltype(x)}(undef, 4))
     x_phi = SVector{3}(x[1:3])
-    x_mu = x[4]
-    fvec[1:3] .= calculate_core(x_phi, x_mu, T, nodes1,omega)
-    fvec[4] = calculate_rho(x_phi, x_mu, T, nodes1,omega) / rho0 - rho
+    x_mu_B = x[4]
+    fvec[1:3] .= calculate_core(x_phi, x_mu_B, T, nodes1,omega)
+    fvec[4] = calculate_rho(x_phi, x_mu_B, T, nodes1,omega) / rho0 - rho
     return fvec
 end
 
 
-function pressure_solve_core(x, mu, T, nodes1, omega)
+function pressure_solve_core(x, mu_B, T, nodes1, omega)
     """Rotation模型的压力求解核心函数"""
     X0_typed = convert.(promote_type(eltype(x), typeof(T)), x)
-    res = nlsolve(x -> calculate_core(x, mu, T, nodes1, omega), X0_typed, autodiff=:forward)
-    return pressure_wrapper(res.zero, mu, T, nodes1, omega)
+    res = nlsolve(x -> calculate_core(x, mu_B, T, nodes1, omega), X0_typed, autodiff=:forward)
+    return pressure_wrapper(res.zero, mu_B, T, nodes1, omega)
 end
-
-# 压力对温度的导数函数（用于分析）
-function dP_dT_rotation(x, mu, T, nodes1, omega)
-    f = T -> pressure_solve_core(x, mu, T, nodes1, omega)
-    return ForwardDiff.derivative(f, T)
-end
-
-function dP_dT2_rotation(x, mu, T, nodes1, omega)
-    f = T -> dP_dT_rotation(x, mu, T, nodes1, omega)
-    return ForwardDiff.derivative(f, T)
-end
-
-function dP_dT3_rotation(x, mu, T, nodes1, omega)
-    f = T -> dP_dT2_rotation(x, mu, T, nodes1, omega)
-    return ForwardDiff.derivative(f, T)
-end
-
-function dP_dT4_rotation(x, mu, T, nodes1, omega)
-    f = T -> dP_dT3_rotation(x, mu, T, nodes1, omega)
-    return ForwardDiff.derivative(f, T)
-end
-
 
 end # module Function_Rotation
