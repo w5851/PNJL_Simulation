@@ -16,7 +16,7 @@ function Trho(T_start,T_end)
     omega = 100/hc
 
     # 输出文件（写入 results/output/Rotation）
-    outdir = joinpath(@__DIR__, "..", "results", "output", "Rotation")
+    outdir = joinpath(@__DIR__, "..", "..", "results", "output", "Rotation")
     mkpath(outdir)
     outfile = joinpath(outdir, "trho_rotation.csv")
 
@@ -89,4 +89,4 @@ function Trho(T_start,T_end)
 end
 
 # If run directly, provide a small example (commented to avoid accidental long runs)
-Trho(20/hc,30/hc)
+Trho(20/hc,21/hc)

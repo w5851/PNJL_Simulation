@@ -16,7 +16,7 @@ function Tmu(T_start; T_end=T_start, T_step=1/hc, mu_start=0/hc, mu_end=0.0, mu_
     nodes1, nodes2 = get_nodes(128, 16)
 
     # 输出文件（写入 results/output/Rotation）
-    outdir = joinpath(@__DIR__, "..", "results", "output", "Rotation")
+    outdir = joinpath(@__DIR__, "..", "..", "results", "output", "Rotation")
     mkpath(outdir)
     outfile = joinpath(outdir, "tmu_rotation.csv")
 
