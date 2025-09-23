@@ -70,4 +70,4 @@ function Tmu(T_start; T_end=T_start, T_step=1/hc, mu_start=0/hc, mu_end=0.0, mu_
 end
 
 # 示例直接运行（注释掉以避免长时间运行）
-Tmu(50/hc; T_end=60/hc, T_step=1/hc, mu_start=0/hc, mu_end=0.0, mu_step=-1/hc)
+Tmu(50/hc; T_end=300/hc, T_step=1/hc, mu_start=300.0/hc, mu_end=300.0/hc, mu_step=-1/hc, omega=700/hc)
