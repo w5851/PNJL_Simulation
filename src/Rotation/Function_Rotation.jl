@@ -227,7 +227,8 @@ end
     entropy = ForwardDiff.derivative(f_T, T)
 
     pressure = pressure_wrapper(x, mu_B, T, nodes1,omega)
-    energy = -pressure + sum(mu .* rho) + T * entropy  # 使用热力学关系计算能量
+    # 使用热力学关系计算能量：能量密度 = -pressure + mu_B * rho + T * entropy
+    energy = -pressure + mu_B * rho + T * entropy
 
     return pressure,rho, entropy,energy
 end
