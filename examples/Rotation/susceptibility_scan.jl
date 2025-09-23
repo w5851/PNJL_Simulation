@@ -105,4 +105,4 @@ function susceptibility_scan(T_start; T_end=T_start, T_step=1/hc,
 end
 
 # example invocation (commented out to avoid long runs)
-susceptibility_scan(80/hc; T_end=200/hc, mode=:omega, n=1, mu_range=(200/hc, 200/hc, -1/hc), omega_range=(0.02,0.02,0.1))
+susceptibility_scan(150/hc; T_end=150/hc, mode=:omega, n=1, mu_range=(300/hc, 300/hc, -1/hc), omega_range=(100/hc,700/hc,1/hc))
